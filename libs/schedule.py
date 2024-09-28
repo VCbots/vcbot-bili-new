@@ -1,3 +1,4 @@
+import random
 from loguru import logger
 from apscheduler.schedulers.blocking import BlockingScheduler
 from bilibili_api import sync
@@ -6,6 +7,7 @@ from . import config,live
 api={}
 Timer=BlockingScheduler()
 def schedule_ctrl(min:int=None,arg:str=None):
+    min+= random.randint(1,3)
     sec=min*60
     logger.debug(str(min)+"min "+str(arg))
     Timer.add_job(schedule_run,trigger='interval',seconds=sec,args=[arg])
