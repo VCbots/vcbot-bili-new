@@ -18,7 +18,7 @@
 
 ## 使用
 
-1. 从[releases](https://github.com/vcbots/vcbot-bili/releases)中获取对应操作系统平台的程序，并解压
+1. 从[releases](https://github.com/vcbots/vcbot-bili-new/releases)中获取对应操作系统平台的程序，并解压
 2. 创建`.env`文件,并填写以下内容
 ```
 roomid=[房间id]
