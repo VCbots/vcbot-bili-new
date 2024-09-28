@@ -23,7 +23,7 @@ def load_plugin():
             module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(module)
             module.api = vcbot_api.copy()
-@logger.catch
+
 async def plugins_event(event:str): # event:all
     skip=False
     for file in os.listdir("plugins"):
@@ -50,7 +50,7 @@ def send_msgs(text:str):
     logger.info(f'send:{text}')
     sync(live.send_danmu(text))
 
-
+@logger.catch
 def listen():
     @live.LiveDanma.on("ALL")
     async def event(event:str):
