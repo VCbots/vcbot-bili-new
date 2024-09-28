@@ -15,8 +15,6 @@ def load_config():
     vcbot_api={"send_msg": send_msgs ,"exception": vcbot_plugin_DoNotContinue,"ban_uid":ignore.ban_uid}
     config.loadroomcfg()
     vcbot_api["roomcfg"]=config.roomcfg
-    botuid=user.get_self_uid(user.c)
-    vcbot_api["bot_uid"]=botuid
 def load_plugin():
     for file in os.listdir("plugins"):
         if file.endswith(".py") and file!="__init__.py":
@@ -35,7 +33,6 @@ async def plugins_event(event:str): # event:all
                 module = importlib.import_module(f"plugins.{file[:-3]}")
                 module.api=vcbot_api.copy()
                 threading.Thread(target=module.events, args=(event,)).start()
-                threading.Thread(target=schedule.events, args=(event,)).join()
             except AttributeError:
                 pass
             except vcbot_plugin_DoNotContinue: 
@@ -47,7 +44,6 @@ async def plugins_event(event:str): # event:all
     if not skip:
         inital_command.api=vcbot_api.copy()
         threading.Thread(target=inital_command.events, args=(event,)).start()
-        threading.Thread(target=schedule.events, args=(event,)).join()
     return 
 
 def send_msgs(text:str):
@@ -79,8 +75,10 @@ if __name__ == '__main__':
     logger.info("Starting...")
     today=datetime.date.today()
     logger.add(f"logs/log-{today}.log",rotation="1 day",encoding="utf-8",format="{time} {level}-{function} {message}")
-    user.user_login()
     load_config()
+    user.user_login()
+    botuid=user.get_self_uid(user.c)
+    vcbot_api["bot_uid"]=botuid
     live.set(config.room,user.c)
     load_plugin()
     threading.Thread(target=schedule.start).start()
