@@ -34,11 +34,13 @@ def get_danmaku_on_gift(event:str):
 def get_danmaku_on_wuser(event:str):
     info = event['data']['data']
     name= info['uname']
-    if info['uid'] in ignore.ban_uid:
+    if str(info['uid']) in ignore.ban_uid:
+        return
+    elif str(info['uid']) in live.owner_uid:
         return
     elif name.startswith("bili_"):
         return
-    elif not info['is_spread']==0:
+    elif info['is_spread']!=0:
         return
     try:
         contents=str(roomcfg["chat"]["global"]["events"]['welcome'])
