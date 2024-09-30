@@ -47,6 +47,7 @@ jobs:
             name: build-${{matrix.os}}
             path: ./vcbots-bili-${{runner.os}}-${{runner.arch}}.zip
     make_bundle:
+      name: Make bundle
       strategy:
         fail-fast: false
         matrix:
@@ -66,7 +67,7 @@ jobs:
           mv python-build runtime
           rm python-${{runner.os}}-${{runner.arch}}.zip
       - name: Clean
-        run: rm -rf .env.example .gitignore README.md .github
+        run: rm -rf .env.example .gitignore README.md .github .git .res run.bat
       - name: Install requirements
         run: |
           ./runtime/bin/python3 -m pip install --upgrade pip
@@ -79,6 +80,7 @@ jobs:
           name: bundle-${{matrix.os}}
           path: ./vcbots-bili-${{matrix.os}}-${{runner.arch}}.zip
     make_bundle_win:
+      name: Make bundle(windows)
       runs-on: windows-latest
       steps:
       - uses: actions/checkout@v4
@@ -93,6 +95,7 @@ jobs:
           cmd /c "del .gitignore /s /q"
           cmd /c "del README.md /s /q"
           cmd /c "del .env.example /s /q"
+          cmd /c "del run.sh /s /q"
       - name: Get pip
         run: |
           Invoke-Webrequest https://bootstrap.pypa.io/get-pip.py -OutFile get-pip.py
@@ -108,3 +111,20 @@ jobs:
         with:
           name: bundle-win
           path: ./vcbots-bili-${{runner.os}}-${{runner.arch}}.zip
+    make_bundle_no_runtime:
+      name: Make bundle(No Runtime)
+      runs-on: ubuntu-latest
+      steps:
+      - uses: actions/checkout@v4
+      - name: Clean
+        run: |
+          rm -rf .env.example .gitignore README.md .github .git .res
+          rm -rf run.bat
+          rm -rf run.sh
+      - name: Pack
+        run: 7z a -tzip vcbots-bili-source.zip .
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-source
+          path: ./vcbots-bili-source.zip
