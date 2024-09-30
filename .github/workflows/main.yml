@@ -83,16 +83,20 @@ jobs:
       steps:
       - uses: actions/checkout@v4
       - name: Download Python
-        run: wget https://www.python.org/ftp/python/3.8.10/python-3.8.10-embed-amd64.zip
+        run: Invoke-Webrequest https://www.python.org/ftp/python/3.8.10/python-3.8.10-embed-amd64.zip -OutFile python-3.8.10-embed-amd64.zip
       - name: Unzip
         run: |
-          unzip python-3.8.10-embed-amd64.zip -d runtime
+          Expand-Archive python-3.8.10-embed-amd64.zip -DestinationPath runtime
       - name: Clean
-        run: rm -rf .env.example .gitignore README.md .github
+        run: |
+          Remove-Item -Path .github -Recurse
+          cmd /c "del .gitignore /s /q"
+          cmd /c "del README.md /s /q"
+          cmd /c "del .env.example /s /q"
       - name: Get pip
         run: |
-          curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-          runtime/python.exe get-pip.py
+          Invoke-Webrequest https://bootstrap.pypa.io/get-pip.py -OutFile get-pip.py
+          runtime/python.exe get-pip.py --no-warn-script-location --target runtime
       - name: Install requirements
         run: |
           runtime/python.exe -m pip install --upgrade pip
