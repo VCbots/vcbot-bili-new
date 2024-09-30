@@ -94,7 +94,7 @@ jobs:
       - name: Clean
         run: |
           Remove-Item -Path .github -Recurse
-          Remove-Item -Path .git -Recurse
+          Remove-Item -Path .git -Recurse -Force
           Remove-Item -Path .res -Recurse
           cmd /c "del .gitignore /s /q"
           cmd /c "del README.md /s /q"
