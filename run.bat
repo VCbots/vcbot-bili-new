@@ -1,2 +1,2 @@
 @echo off
-.\runtime\python main.py
+.\runtime\python.exe main.py

@@ -72,13 +72,14 @@ jobs:
         run: |
           ./runtime/bin/python3 -m pip install --upgrade pip
           ./runtime/bin/python3 -m pip install -r requirements.txt
+          rm requirements.txt
       - name: Pack
-        run: 7z a -tzip vcbots-bili-${{matrix.os}}-${{runner.arch}}.zip .
+        run: 7z a -tzip vcbots-bili-${{runner.os}}-${{runner.arch}}.zip .
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
           name: bundle-${{matrix.os}}
-          path: ./vcbots-bili-${{matrix.os}}-${{runner.arch}}.zip
+          path: ./vcbots-bili-${{runner.os}}-${{runner.arch}}.zip
     make_bundle_win:
       name: Make bundle(windows)
       runs-on: windows-latest
@@ -89,9 +90,12 @@ jobs:
       - name: Unzip
         run: |
           Expand-Archive python-3.8.10-embed-amd64.zip -DestinationPath runtime
+          cmd /c "del python-3.8.10-embed-amd64.zip /s /q"
       - name: Clean
         run: |
           Remove-Item -Path .github -Recurse
+          Remove-Item -Path .git -Recurse
+          Remove-Item -Path .res -Recurse
           cmd /c "del .gitignore /s /q"
           cmd /c "del README.md /s /q"
           cmd /c "del .env.example /s /q"
@@ -100,10 +104,12 @@ jobs:
         run: |
           Invoke-Webrequest https://bootstrap.pypa.io/get-pip.py -OutFile get-pip.py
           runtime/python.exe get-pip.py --no-warn-script-location --target runtime
+          cmd /c "del get-pip.py /s /q"
       - name: Install requirements
         run: |
           runtime/python.exe -m pip install --upgrade pip
           runtime/python.exe -m pip install -r requirements.txt
+          cmd /c "del requirements.txt /s /q"
       - name: Pack
         run: 7z a -tzip vcbots-bili-${{runner.os}}-${{runner.arch}}.zip .
       - name: Upload

@@ -1,1 +1,1 @@
-./runtime/bin/python main.py
+./runtime/bin/python3 main.py
