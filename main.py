@@ -10,11 +10,13 @@ from libs import live,user,config,ignore
 from libs import inital_command,schedule
 
 skip=False
+
 def load_config():
     global vcbot_api
     vcbot_api={"send_msg": send_msgs ,"exception": vcbot_plugin_DoNotContinue,"ban_uid":ignore.ban_uid}
     config.loadroomcfg()
     vcbot_api["roomcfg"]=config.roomcfg
+
 def load_plugin():
     for file in os.listdir("plugins"):
         if file.endswith(".py") and file!="__init__.py":
@@ -50,10 +52,11 @@ def send_msgs(text:str):
     logger.info(f'send:{text}')
     sync(live.send_danmu(text))
 
-@logger.catch
 def listen():
     @live.LiveDanma.on("ALL")
     async def event(event:str):
+        if event["type"] in ignore.ban_type: # 屏蔽一些乱七八糟的类型段
+            return
         logger.debug(f'收到事件：\n{json.dumps(event,ensure_ascii=False)}')
         await plugins_event(event)
         return
@@ -63,7 +66,7 @@ def listen():
         sync(live.LiveDanma.connect())
     finally:
         sync(live.LiveDanma.disconnect())
-        schedule.close()
+        threading.Thread(target=schedule.close).start()
         os._exit(0)
 
 class vcbot_plugin_DoNotContinue(Exception):
@@ -71,15 +74,21 @@ class vcbot_plugin_DoNotContinue(Exception):
         self.msg=msg
         skip=True
 
-if __name__ == '__main__':
+@logger.catch
+def main():
     logger.info("Starting...")
     today=datetime.date.today()
     logger.add(f"logs/log-{today}.log",rotation="1 day",encoding="utf-8",format="{time} {level}-{function} {message}")
     load_config()
     user.user_login()
-    botuid=user.get_self_uid(user.c)
-    vcbot_api["bot_uid"]=botuid
     live.set(config.room,user.c)
+    botuid=user.get_self_uid(user.c)
+    live_room_owner_uid=live.owner_uid
+    vcbot_api["bot_uid"]=botuid
+    vcbot_api["room_owner_uid"]=live_room_owner_uid
     load_plugin()
     threading.Thread(target=schedule.start).start()
     listen()
+    
+if __name__ == "__main__":
+    main()
