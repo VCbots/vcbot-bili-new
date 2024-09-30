@@ -13,6 +13,7 @@ jobs:
             matrix:
                 os: [macos-latest,ubuntu-latest,windows-latest,macos-13]
         runs-on: ${{matrix.os}}
+        if: false
         steps:
         - uses: actions/checkout@v4
         - name: Setup Python
@@ -45,3 +46,61 @@ jobs:
           with: 
             name: build-${{matrix.os}}
             path: ./vcbots-bili-${{runner.os}}-${{runner.arch}}.zip
+    make_bundle:
+      strategy:
+        fail-fast: false
+        matrix:
+            os: [macos-latest,ubuntu-latest,macos-13]
+      runs-on: ${{matrix.os}}
+      steps:
+      - uses: actions/checkout@v4
+      - name: Download Python
+        uses: robinraju/release-downloader@v1
+        with:
+          repository: luyanci/python-prebuilt
+          tag: Python-v3.8.19-2024-09-30.28
+          fileName: python-${{runner.os}}-${{runner.arch}}.zip
+      - name: Unzip
+        run: |
+          unzip python-${{runner.os}}-${{runner.arch}}.zip
+          mv python-build runtime
+          rm python-${{runner.os}}-${{runner.arch}}.zip
+      - name: Clean
+        run: rm -rf .env.example .gitignore README.md .github
+      - name: Install requirements
+        run: |
+          ./runtime/bin/python3 -m pip install --upgrade pip
+          ./runtime/bin/python3 -m pip install -r requirements.txt
+      - name: Pack
+        run: 7z a -tzip vcbots-bili-${{matrix.os}}-${{runner.arch}}.zip .
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-${{matrix.os}}
+          path: ./vcbots-bili-${{matrix.os}}-${{runner.arch}}.zip
+    make_bundle_win:
+      runs-on: windows-latest
+      steps:
+      - uses: actions/checkout@v4
+      - name: Download Python
+        run: wget https://www.python.org/ftp/python/3.8.10/python-3.8.10-embed-amd64.zip
+      - name: Unzip
+        run: |
+          unzip python-3.8.10-embed-amd64.zip -d runtime
+      - name: Clean
+        run: rm -rf .env.example .gitignore README.md .github
+      - name: Get pip
+        run: |
+          curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+          runtime/python.exe get-pip.py
+      - name: Install requirements
+        run: |
+          runtime/python.exe -m pip install --upgrade pip
+          runtime/python.exe -m pip install -r requirements.txt
+      - name: Pack
+        run: 7z a -tzip vcbots-bili-${{runner.os}}-${{runner.arch}}.zip .
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-win
+          path: ./vcbots-bili-${{runner.os}}-${{runner.arch}}.zip
