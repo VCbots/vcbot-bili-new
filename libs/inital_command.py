@@ -36,7 +36,7 @@ def get_danmaku_on_wuser(event:str):
     name= info['uname']
     if str(info['uid']) in ignore.ban_uid:
         return
-    elif str(info['uid']) in live.owner_uid:
+    elif str(info['uid']) is live.owner_uid:
         return
     elif name.startswith("bili_"):
         return
