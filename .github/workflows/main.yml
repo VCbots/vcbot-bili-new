@@ -108,7 +108,8 @@ jobs:
       - name: Install requirements
         run: |
           runtime/python.exe -m pip install --upgrade pip
-          runtime/python.exe -m pip install -r requirements.txt
+          runtime/python.exe -m pip install -r requirements.txt -t runtime --no-warn-script-location
+          runtime/python.exe -m pip list
           cmd /c "del requirements.txt /s /q"
       - name: Pack
         run: 7z a -tzip vcbots-bili-${{runner.os}}-${{runner.arch}}.zip .
