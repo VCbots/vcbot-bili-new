@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 import datetime
 import threading
@@ -6,6 +7,10 @@ import importlib.util
 
 from loguru import logger
 from bilibili_api import sync
+
+# 添加当前目录到python路径(避免额外写的模块出现ModuleNotFoundError/ImportError)
+sys.path.append(os.getcwd())
+#print(sys.path)
 from libs import live,user,config,ignore
 from libs import inital_command,schedule
 
