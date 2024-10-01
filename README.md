@@ -6,6 +6,12 @@
 
 一个用于B站的简单机器人框架(基于python)
 
+
+
+[![996.icu](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu)
+
+[![LICENSE](https://img.shields.io/badge/license-Anti%20996-blue.svg)](https://github.com/996icu/996.ICU/blob/master/LICENSE) ![LICENSE](https://img.shields.io/badge/license-MIT%20License-blue.svg)
+
 </div>
 
 ## 开发原因
