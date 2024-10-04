@@ -3,6 +3,7 @@ from loguru import logger
 from . import config,live,ignore
 
 api={}
+
 def get_danmaku_content(event:str):
     uid=event["data"]["info"][2][0]
     content=event["data"]["info"][1]
@@ -12,11 +13,7 @@ def get_danmaku_content(event:str):
     try:
         contents=roomcfg["chat"][f"{uid}"]["command"][content]
     except:
-        try:
-            contents=roomcfg["chat"]["global"]["command"][content]
-            logger.info("Reply:"+str(contents))
-        except KeyError as e:
-            return ""
+        contents=""
     return contents
 
 def get_danmaku_on_gift(event:str):
@@ -38,7 +35,7 @@ def get_danmaku_on_wuser(event:str):
         return
     elif str(info['uid']) is live.owner_uid:
         return
-    elif name.startswith("bili_"):
+    elif name.startswith("bili_") or name.endswith("_bili"):
         return
     elif info['is_spread']!=0:
         return
