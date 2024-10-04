@@ -33,19 +33,11 @@ default={
 def loadroomcfg():
     if not os.path.exists("./.env"):
         roomid=input("未检测到配置文件，请输入房间号:")
-        term_login = "n"
-        term_login = input("是否使用终端登录？(y/[n]):")
-        if term_login.lower() == "y":
-            term_env_set = 1
-        else:
-            term_env_set = 0
         with open("./.env",mode="w",encoding="utf-8",errors="ignore") as env:
-            env.write(f"roomid={roomid}\nterm_env={term_env_set}")
+            env.write(f"roomid={roomid}")
     load_dotenv(dotenv_path="./.env")
     global room
     room=os.environ["roomid"]
-    global term_env
-    term_env = os.environ["term_env"]
     global roomcfg
     global plugins_cfg
     try:

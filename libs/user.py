@@ -22,6 +22,7 @@ def get_self_uid(Credential: Credential):
     i= sync( user.get_self_info(credential=Credential))
     bot_uid=str(i['mid'])
     return bot_uid
+
 def user_login():
     global c
     logger.info('Try to login from cookie.json...')
@@ -30,10 +31,10 @@ def user_login():
         c = Credential(sessdata=cook["SESSDATA"],bili_jct=cook["bili_jct"],buvid3=cook["buvid3"],ac_time_value=cook["ac_time_value"],dedeuserid=cook["DedeUserID"])
     except:
         logger.info('Failed!Please login with qrcode!')
-        if config.term_env == '1':
-            c = _user_login_term()
-        elif config.term_env is None or config.term_env == '0':
+        try:
             c = _user_login()
+        except ModuleNotFoundError:
+            c = _user_login_term()
         try:
             c.raise_for_no_sessdata()
             c.raise_for_no_bili_jct()
