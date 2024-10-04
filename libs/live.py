@@ -13,6 +13,8 @@ def set(room:int,credential:Credential):
     return
 
 async def send_danmu(text: str = None):
+    if text == None:
+        return
     lens=len(text)
     logger.debug(lens)
     if lens > 20:
