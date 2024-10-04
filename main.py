@@ -9,7 +9,8 @@ from loguru import logger
 from bilibili_api import sync
 
 # 添加当前目录到python路径(避免额外写的模块出现ModuleNotFoundError/ImportError)
-sys.path.append(os.getcwd())
+if not os.getcwd() in sys.path:
+    sys.path.append(os.getcwd())
 #print(sys.path)
 from libs import live,user,config,ignore
 from libs import inital_command,schedule
@@ -21,6 +22,10 @@ def load_config():
     vcbot_api={"send_msg": send_msgs ,"exception": vcbot_plugin_DoNotContinue,"ban_uid":ignore.ban_uid}
     config.loadroomcfg()
     vcbot_api["roomcfg"]=config.roomcfg
+    live.set(config.room,user.c)
+    vcbot_api["bot_uid"]=user.get_self_uid(user.c)
+    vcbot_api["room_owner_uid"]=live.owner_uid
+    vcbot_api['liveroom']=live.liveroom
 
 def load_plugin():
     for file in os.listdir("plugins"):
@@ -81,19 +86,13 @@ class vcbot_plugin_DoNotContinue(Exception):
 
 @logger.catch
 def main():
-    logger.info("Starting...")
     today=datetime.date.today()
     logger.add(f"logs/log-{today}.log",rotation="1 day",encoding="utf-8",format="{time} {level}-{function} {message}")
-    load_config()
+    logger.info("Starting...")
     user.user_login()
-    live.set(config.room,user.c)
-    botuid=user.get_self_uid(user.c)
-    live_room_owner_uid=live.owner_uid
-    vcbot_api["bot_uid"]=botuid
-    vcbot_api["room_owner_uid"]=live_room_owner_uid
+    load_config()
     load_plugin()
     threading.Thread(target=schedule.start).start()
     listen()
-    
 if __name__ == "__main__":
     main()
