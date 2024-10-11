@@ -59,7 +59,7 @@ jobs:
         uses: robinraju/release-downloader@v1
         with:
           repository: luyanci/python-prebuilt
-          tag: Python-v3.8.19-2024-09-30.28
+          tag: Python-v3.9.20-2024-10-11.29
           fileName: python-${{runner.os}}-${{runner.arch}}.zip
       - name: Unzip
         run: |
