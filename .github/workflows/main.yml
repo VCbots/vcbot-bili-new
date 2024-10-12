@@ -86,10 +86,10 @@ jobs:
       steps:
       - uses: actions/checkout@v4
       - name: Download Python
-        run: Invoke-Webrequest https://www.python.org/ftp/python/3.8.10/python-3.8.10-embed-amd64.zip -OutFile python-3.8.10-embed-amd64.zip
+        run: Invoke-Webrequest https://www.python.org/ftp/python/3.9.13/python-3.9.13-embed-amd64.zip -OutFile python-3.9.13-embed-amd64.zip
       - name: Unzip python
         run: |
-          Expand-Archive python-3.8.10-embed-amd64.zip -DestinationPath runtime
+          Expand-Archive python-3.9.13-embed-amd64.zip -DestinationPath runtime
           cmd /c "del python-3.8.10-embed-amd64.zip /s /q"
       - name: Clean
         run: |
