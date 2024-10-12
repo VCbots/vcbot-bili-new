@@ -109,7 +109,7 @@ jobs:
         uses: robinraju/release-downloader@v1
         with:
           repository: luyanci/python-prebuilt
-          tag: embed-tkinter-patch
+          tag: embed-tk-39
           fileName: embed-tk-X64.zip
       - name: Unzip tkinter
         run: |
