@@ -17,6 +17,7 @@ from libs import inital_command,schedule
 
 skip=False
 
+
 def load_config():
     global vcbot_api
     vcbot_api={"send_msg": send_msgs ,"exception": vcbot_plugin_DoNotContinue,"ban_uid":ignore.ban_uid}
@@ -58,7 +59,10 @@ async def plugins_event(event:str): # event:all
         threading.Thread(target=inital_command.events, args=(event,)).start()
     return 
 
-def send_msgs(text:str):
+def send_msgs(text:str=""|None):
+    if text == None or text == "":
+        logger.warning("接收到非法参数！")
+        pass
     logger.info(f'send:{text}')
     sync(live.send_danmu(text))
 
