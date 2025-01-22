@@ -13,7 +13,7 @@ def events(event:str):
     global send_msg
     roomcfg=api.get('roomcfg')
     send_msg=api.get('send_msg')
-    if event['type']=='PK_BATTLE_PRE':
+    if event['type'] in ['PK_BATTLE_PRE','PK_BATTLE_PRE_NEW']:
         pki=LiveRoom(event['data']['data']['room_id'],credential=c)
         users=User(event['data']['data']['uid'],credential=c)
         guards_num=sync(pki.get_dahanghai(1))['info']['num']
