@@ -69,4 +69,7 @@ def events(event:str):
         else:
             save(event)
             return
+    elif event_type=="GUARD_BUY":
+        save(event)
+        return
     return
